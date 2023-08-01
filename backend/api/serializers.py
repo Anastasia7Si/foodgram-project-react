@@ -57,7 +57,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
             'name',
             'image',
             'text',
-            'cooking_time',
+            'cooking_time'
         )
         read_only_fields = ('tags', 'author', 'is_favorited',
                             'is_in_shopping_cart')
@@ -68,21 +68,21 @@ class RecipeReadSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'measurement_unit',
-            quantity=F('list_ingredient__quantity'),
+            quantity=F('list_ingredient__quantity')
         )
         return ingredients
 
     def get_is_favorited(self, obj):
-        user = self.context.get('request').user
-        if user.is_anonymous:
+        if self.context.get('request').user.is_anonymous:
             return False
-        return user.favorites.filter(recipe=obj).exists()
+        return self.context.get('request').user.favorites.filter(
+            recipe=obj).exists()
 
     def get_is_in_shopping_cart(self, obj):
-        user = self.context.get('request').user
-        if user.is_anonymous:
+        if self.context.get('request').user.is_anonymous:
             return False
-        return user.shopping_cart.filter(recipe=obj).exists()
+        return self.context.get('request').user.shopping_cart.filter(
+            recipe=obj).exists()
 
 
 class RecipeReWriteSerializer(serializers.ModelSerializer):
@@ -102,7 +102,7 @@ class RecipeReWriteSerializer(serializers.ModelSerializer):
             'name',
             'image',
             'text',
-            'cooking_time',
+            'cooking_time'
         )
 
     def validate_ingredients(self, value):

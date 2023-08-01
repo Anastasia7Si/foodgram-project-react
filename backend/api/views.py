@@ -20,7 +20,7 @@ from users.serializers import RecipeShorPresentationtSerializer
 
 
 class IngredientViewSet(ReadOnlyModelViewSet):
-    """Вьюсет ингредиентов"""
+    """Вьюсет ингредиентов."""
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = (IsAdminOrReadOnly,)
@@ -29,14 +29,14 @@ class IngredientViewSet(ReadOnlyModelViewSet):
 
 
 class TagViewSet(ReadOnlyModelViewSet):
-    """Вьюсет тэгов"""
+    """Вьюсет тэгов."""
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = (IsAdminOrReadOnly,)
 
 
 class RecipeViewSet(ModelViewSet):
-    """Вьюсет рецептов"""
+    """Вьюсет рецептов."""
     queryset = Recipe.objects.all()
     permission_classes = (IsAuthorOrReadOnly | IsAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)

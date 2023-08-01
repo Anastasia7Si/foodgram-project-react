@@ -24,13 +24,14 @@ class UserReadSerializer(UserSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email',
-                  'first_name', 'last_name', 'is_subscribed',)
+                  'first_name', 'last_name', 'is_subscribed')
 
     def get_is_subscribed(self, obj):
-        user = self.context.get('request').user
-        if user.is_anonymous:
+        if self.context.get('request').user.is_anonymous:
             return False
-        return Following.objects.filter(user=user, author=obj).exists()
+        return Following.objects.filter(
+            user=self.context.get('request').user, author=obj
+            ).exists()
 
 
 class FollowingRecipeSerializer(serializers.ModelSerializer):
@@ -68,12 +69,13 @@ class FollowingSerializer(UserReadSerializer):
                             'last_name')
 
     def validate(self, data):
-        user = self.context.get('request').user
-        author = self.context.get('author_id')
-        if user == author:
+        if self.context.get('request').user == self.context.get('author_id'):
             return serializers.ValidationError({
                 'errors': 'Нельзя подписаться на собственный профиль!'})
-        if Following.objects.filter(user=user, author=author).exists():
+        if Following.objects.filter(
+            user=self.context.get('request').user,
+            author=self.context.get('author_id')
+        ).exists():
             return serializers.ValidationError({
                 'errors': 'Вы уже подписанны на этого автора!'})
         return data

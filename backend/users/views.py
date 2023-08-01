@@ -13,6 +13,7 @@ User = get_user_model()
 
 
 class UserViewSet(UserViewSet):
+    """Вевьюсет пользователя."""
     queryset = User.objects.all()
     serializer_class = UserReadSerializer
 
@@ -23,8 +24,7 @@ class UserViewSet(UserViewSet):
     )
     def subscribe(self, request, **kwargs):
         user = request.user
-        author_id = self.kwargs.get('id')
-        author = get_object_or_404(User, id=author_id)
+        author = get_object_or_404(User, id=self.kwargs.get('id'))
         context = {
             "request": request
             }
@@ -50,9 +50,12 @@ class UserViewSet(UserViewSet):
     )
     def subscriptions(self, request):
         user = request.user
-        queryset = User.objects.filter(following__user=user)
-        pages = self.paginate_queryset(queryset)
+        context = {
+            'request': request
+            }
+        pages = self.paginate_queryset(
+            User.objects.filter(following__user=user))
         serializer = FollowingSerializer(pages,
                                          many=True,
-                                         context={'request': request})
+                                         context=context)
         return self.get_paginated_response(serializer.data)
