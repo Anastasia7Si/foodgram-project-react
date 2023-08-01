@@ -52,7 +52,7 @@ class UserViewSet(UserViewSet):
         user = request.user
         context = {
             'request': request
-            }
+        }
         pages = self.paginate_queryset(
             User.objects.filter(following__user=user))
         serializer = FollowingSerializer(pages,

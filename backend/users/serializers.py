@@ -31,7 +31,7 @@ class UserReadSerializer(UserSerializer):
             return False
         return Following.objects.filter(
             user=self.context.get('request').user, author=obj
-            ).exists()
+        ).exists()
 
 
 class FollowingRecipeSerializer(serializers.ModelSerializer):
