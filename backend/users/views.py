@@ -27,7 +27,7 @@ class UserViewSet(UserViewSet):
         author = get_object_or_404(User, id=self.kwargs.get('id'))
         context = {
             "request": request
-            }
+        }
 
         if request.method == 'POST':
             serializer = FollowingSerializer(author,

@@ -64,5 +64,5 @@ class Following(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'author'], name='unique_subscription'
-                )
+            )
         ]
