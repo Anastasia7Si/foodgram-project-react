@@ -5,7 +5,6 @@ from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField, IntegerField
 from rest_framework.relations import PrimaryKeyRelatedField
-from rest_framework.exceptions import ValidationError
 
 from recipes.models import Recipe, Tag, Ingredient, IngredientQuantity
 from users.serializers import UserReadSerializer
@@ -37,7 +36,7 @@ class QuantityWriteSerializer(serializers.ModelSerializer):
 
 
 class RecipeReadSerializer(serializers.ModelSerializer):
-    """Сериализатор просмотра рецпета."""
+    """Сериализатор просмотра рецепта."""
     tags = TagSerializer(many=True)
     author = UserReadSerializer()
     ingredients = SerializerMethodField()
@@ -68,7 +67,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'measurement_unit',
-            quantity=F('list_ingredient__quantity')
+            quantity=F('ingredientquantity__quantity')
         )
         return ingredients
 
@@ -108,30 +107,25 @@ class RecipeReWriteSerializer(serializers.ModelSerializer):
     def validate_ingredients(self, value):
         ingredients = value
         if not ingredients:
-            raise ValidationError({
-                'ingredients': 'Необходимо добавить хотя бы один ингредиент!'})
+            return ('Необходимо добавить хотя бы один ингредиент!')
         ingredients_list = []
         for item in ingredients:
             ingredient = get_object_or_404(Ingredient, id=item['id'])
             if ingredient in ingredients_list:
-                raise ValidationError({
-                    'ingredients': 'Ингредиент повторяется в рецепте!'})
+                return ('Ингредиент повторяется в рецепте!')
             if int(item['quantity']) <= 0:
-                raise ValidationError({
-                    'quantity': 'Нулевое количество ингредиента!!'})
+                return ('Нулевое количество ингредиента!')
             ingredients_list.append(ingredient)
         return value
 
     def validate_tags(self, value):
         tags = value
         if not tags:
-            raise ValidationError({
-                'tags': 'Необходимо добавить хотя бы один тэг!'})
+            return ('Необходимо добавить хотя бы один тэг!')
         tags_list = []
         for tag in tags:
             if tag in tags_list:
-                raise ValidationError({
-                    'tags': 'Необходимо ввести уникальные тэги!'})
+                return ('Необходимо ввести уникальные тэги!')
             tags_list.append(tag)
         return value
 
@@ -162,7 +156,7 @@ class RecipeReWriteSerializer(serializers.ModelSerializer):
         instance.ingredients.clear()
         self.create_ingredients_quantity(recipe=instance,
                                          ingredients=ingredients)
-        instance.save
+        instance.save()
         return instance
 
     def to_representation(self, instance):

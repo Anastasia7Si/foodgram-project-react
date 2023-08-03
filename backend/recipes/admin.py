@@ -2,7 +2,14 @@ from django.contrib import admin
 from django.contrib.admin import display
 
 from .models import (Ingredient, Recipe, Tag,
-                     IngredientQuantity, Favorite, Shopping_cart)
+                     IngredientQuantity, Favorite,
+                     Shopping_cart)
+from users.models import Following
+
+
+class IngredientInline(admin.TabularInline):
+    model = IngredientQuantity
+    min_num = 1
 
 
 @admin.register(Ingredient)
@@ -14,6 +21,7 @@ class IngredientAdmin(admin.ModelAdmin):
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
+    inlines = (IngredientInline,)
     list_display = ('name', 'author', 'is_favorited_count')
     list_filter = ('name', 'author', 'tags')
 
@@ -37,8 +45,16 @@ class IngredientQuantityAdmin(admin.ModelAdmin):
 @admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
     list_display = ('user', 'recipe')
+    list_filter = ('user',)
 
 
 @admin.register(Shopping_cart)
 class Shopping_cartAdmin(admin.ModelAdmin):
     list_display = ('user', 'recipe')
+    list_filter = ('user',)
+
+
+@admin.register(Following)
+class FollowingAdmin(admin.ModelAdmin):
+    list_display = ('user', 'author')
+    list_filter = ('user',)

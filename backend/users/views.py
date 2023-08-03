@@ -5,6 +5,7 @@ from djoser.views import UserViewSet
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+
 from .serializers import UserReadSerializer, FollowingSerializer
 from .models import Following
 
@@ -26,7 +27,7 @@ class UserViewSet(UserViewSet):
         user = request.user
         author = get_object_or_404(User, id=self.kwargs.get('id'))
         context = {
-            "request": request
+            'request': request
         }
 
         if request.method == 'POST':

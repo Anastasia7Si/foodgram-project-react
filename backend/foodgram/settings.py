@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv()
-SECRET_KEY = os.getenv('TOKEN')
+SECRET_KEY = os.getenv('TOKEN', default='secret0password')
 
 DEBUG = True
 
@@ -115,7 +115,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_ROOT = BASE_DIR / STATIC_URL
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / MEDIA_URL

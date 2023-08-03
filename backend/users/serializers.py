@@ -57,7 +57,9 @@ class RecipeShorPresentationtSerializer(serializers.ModelSerializer):
 
 class FollowingSerializer(UserReadSerializer):
     """Сериализатор подписок."""
-    recipes_count = serializers.SerializerMethodField()
+    recipes_count = serializers.IntegerField(
+        source='recipes_set.count',
+        read_only=True)
     recipes = serializers.SerializerMethodField()
 
     class Meta:
@@ -79,9 +81,6 @@ class FollowingSerializer(UserReadSerializer):
             return serializers.ValidationError({
                 'errors': 'Вы уже подписанны на этого автора!'})
         return data
-
-    def get_recipes_count(self, obj):
-        return obj.recipes.count()
 
     def get_recipes(self, obj):
         request = self.context.get('request')

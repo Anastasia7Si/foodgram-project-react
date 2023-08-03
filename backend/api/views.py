@@ -1,6 +1,4 @@
-from django.db.models import Sum
 from django_filters.rest_framework import DjangoFilterBackend
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import action
@@ -13,9 +11,9 @@ from .serializers import (TagSerializer, IngredientSerializer,
                           RecipeReadSerializer, RecipeReWriteSerializer)
 from .permissions import IsAuthorOrReadOnly, IsAdminOrReadOnly
 from .pagination import Pagination
+from .utils import download_shopping_cart_file
 from recipes.models import (Recipe, Tag, Ingredient,
-                            Favorite, Shopping_cart,
-                            IngredientQuantity)
+                            Favorite, Shopping_cart)
 from users.serializers import RecipeShorPresentationtSerializer
 
 
@@ -59,8 +57,7 @@ class RecipeViewSet(ModelViewSet):
     def favorite(self, request, pk):
         if request.method == 'POST':
             return self.add_to(Favorite, request.user, pk)
-        else:
-            return self.delete_from(Favorite, request.user, pk)
+        return self.delete_from(Favorite, request.user, pk)
 
     @action(
         detail=True,
@@ -70,8 +67,7 @@ class RecipeViewSet(ModelViewSet):
     def shopping_cart(self, request, pk):
         if request.method == 'POST':
             return self.add_to(Shopping_cart, request.user, pk)
-        else:
-            return self.delete_from(Shopping_cart, request.user, pk)
+        return self.delete_from(Shopping_cart, request.user, pk)
 
     def add_to(self, model, user, pk):
         if model.objects.filter(user=user, recipe__id=pk).exists():
@@ -94,28 +90,7 @@ class RecipeViewSet(ModelViewSet):
         detail=False,
         permission_classes=[IsAuthenticated]
     )
-    def download_shopping_cart_file(self, request):
-        user = request.user
-        if not user.shopping_cart.exists():
-            return Response({'errors': 'Список покупок пуст!'},
-                            status=status.HTTP_400_BAD_REQUEST)
-        purchases = (
-            f'Список покупок: {user.get_full_name()}\n\n'
-        )
-        purchases_cart = IngredientQuantity.objects.filter(
-            recipe__shopping_cart__user=user
-        ).values(
-            'ingredient__name',
-            'ingredient__measurement_unit'
-        ).annotate(quantity=Sum('quantity'))
-        purchases += '\n'.join([
-            f'- {item["ingredient__name"]} '
-            f'({item["ingredient__measurement_unit"]})'
-            f' - {item["quantity"]}'
-            for item in purchases_cart
-        ])
-        purchases += '\n\nFoodgram'
-        response = HttpResponse(purchases, content_type='application/pdf')
-        filename = f'{request.user.username}_shopping_list.pdf'
-        response['Content-Disposition'] = f'attachment; filename={filename}'
-        return response
+    def download_shopping_cart(self, request):
+        if request.method == 'GET':
+            return download_shopping_cart_file(request)
+        return Response(status=status.HTTP_400_BAD_REQUEST)

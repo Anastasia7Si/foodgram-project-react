@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.validators import RegexValidator
 
-username_validator = RegexValidator(r"^[\w.@+-]+\Z")
+username_validator = RegexValidator(r'^[\w.@+-]+\Z')
 
 
 class User(AbstractUser):
