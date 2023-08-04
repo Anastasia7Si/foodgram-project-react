@@ -97,4 +97,5 @@ dmypy.json
 
 .idea
 
-/media
+.png
+.webp
