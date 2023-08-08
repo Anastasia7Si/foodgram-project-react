@@ -42,10 +42,12 @@ class Ingredient(models.Model):
     name = models.CharField(
         max_length=200,
         verbose_name='Ингредиент',
-        db_index=True)
+        db_index=True,
+        blank=False)
     measurement_unit = models.CharField(
         max_length=200,
-        verbose_name='Единица измерения')
+        verbose_name='Единица измерения',
+        blank=False)
 
     class Meta:
         ordering = ('name',)
@@ -57,7 +59,7 @@ class Ingredient(models.Model):
         ]
 
     def __str__(self):
-        return f'{self.name}, {self.measurement_unit}'
+        return f'{self.name}'
 
 
 class Recipe(models.Model):
@@ -82,7 +84,7 @@ class Recipe(models.Model):
         verbose_name='Теги')
     ingredients = models.ManyToManyField(
         Ingredient,
-        through='IngredientQuantity',
+        through='IngredientAmount',
         verbose_name='Ингридиенты',
         related_name='recipes',
     )
@@ -101,23 +103,24 @@ class Recipe(models.Model):
         verbose_name_plural = 'Рецепты'
 
     def __str__(self):
-        return self.name
+        return f'{self.name}'
 
 
-class IngredientQuantity(models.Model):
-    """Модель связи между моделами Ingredient и Recipe."""
+class IngredientAmount(models.Model):
+    """Модель связи между моделями Ingredient и Recipe."""
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
-        related_name='ingredientquantity',
+        related_name='ingredientsamount',
         verbose_name='Ингредиент',
     )
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
+        related_name='ingredientsamount',
         verbose_name='Рецепт',
     )
-    quantity = models.PositiveSmallIntegerField(
+    amount = models.PositiveSmallIntegerField(
         validators=(
             validators.MinValueValidator(
                 1, message='Минимальное количество ингридиентов 1!'),),
@@ -135,7 +138,7 @@ class IngredientQuantity(models.Model):
 
     def __str__(self):
         return (
-            f'{self.ingredient.name} - {self.quantity}'
+            f'{self.ingredient.name} - {self.amount}'
             f'  {self.ingredient.measurement_unit}'
         )
 

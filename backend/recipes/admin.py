@@ -2,13 +2,13 @@ from django.contrib import admin
 from django.contrib.admin import display
 
 from .models import (Ingredient, Recipe, Tag,
-                     IngredientQuantity, Favorite,
+                     IngredientAmount, Favorite,
                      Shopping_cart)
 from users.models import Following
 
 
 class IngredientInline(admin.TabularInline):
-    model = IngredientQuantity
+    model = IngredientAmount
     min_num = 1
 
 
@@ -36,10 +36,10 @@ class TagAdmin(admin.ModelAdmin):
     list_filter = ('name', 'slug')
 
 
-@admin.register(IngredientQuantity)
-class IngredientQuantityAdmin(admin.ModelAdmin):
+@admin.register(IngredientAmount)
+class IngredientAmountAdmin(admin.ModelAdmin):
     description = 'Ингредиенты в рецептах'
-    list_display = ('ingredient', 'recipe', 'quantity')
+    list_display = ('ingredient', 'recipe', 'amount')
 
 
 @admin.register(Favorite)

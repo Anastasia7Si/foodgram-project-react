@@ -1,6 +1,6 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
-from rest_framework import status
+from rest_framework import status, filters
 from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
@@ -8,7 +8,7 @@ from rest_framework.response import Response
 
 from .filters import IngredientFilter, RecipeFilter
 from .serializers import (TagSerializer, IngredientSerializer,
-                          RecipeReadSerializer, RecipeReWriteSerializer)
+                          RecipeReadSerializer, RecipeWriteSerializer)
 from .permissions import IsAuthorOrReadOnly, IsAdminOrReadOnly
 from .pagination import Pagination
 from .utils import download_shopping_cart_file
@@ -22,8 +22,10 @@ class IngredientViewSet(ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = (IsAdminOrReadOnly,)
-    filter_backends = (DjangoFilterBackend,)
     filterset_class = IngredientFilter
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('^name',)
+    pagination_class = None
 
 
 class TagViewSet(ReadOnlyModelViewSet):
@@ -31,6 +33,7 @@ class TagViewSet(ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = (IsAdminOrReadOnly,)
+    pagination_class = None
 
 
 class RecipeViewSet(ModelViewSet):
@@ -47,7 +50,7 @@ class RecipeViewSet(ModelViewSet):
     def get_serializer_class(self):
         if self.request.method in SAFE_METHODS:
             return RecipeReadSerializer
-        return RecipeReWriteSerializer
+        return RecipeWriteSerializer
 
     @action(
         detail=True,

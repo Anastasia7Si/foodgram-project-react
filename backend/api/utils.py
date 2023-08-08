@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.response import Response
 
-from recipes.models import IngredientQuantity
+from recipes.models import IngredientAmount
 
 
 def download_shopping_cart_file(request):
@@ -14,16 +14,16 @@ def download_shopping_cart_file(request):
     purchases = (
         f'Список покупок: {user.get_full_name()}\n\n'
     )
-    purchases_cart = IngredientQuantity.objects.filter(
+    purchases_cart = IngredientAmount.objects.filter(
         recipe__shopping_cart__user=user
     ).values(
         'ingredient__name',
         'ingredient__measurement_unit'
-    ).annotate(quantity=Sum('quantity'))
+    ).annotate(amount=Sum('amount'))
     purchases += '\n'.join([
         f'- {item["ingredient__name"]} '
         f'({item["ingredient__measurement_unit"]})'
-        f' - {item["quantity"]}'
+        f' - {item["amount"]}'
         for item in purchases_cart
     ])
     purchases += '\n\nFoodgram'
