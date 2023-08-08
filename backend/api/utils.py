@@ -28,6 +28,6 @@ def download_shopping_cart_file(request):
     ])
     purchases += '\n\nFoodgram'
     response = HttpResponse(purchases, content_type='application/pdf')
-    filename = f'{request.user.username}_shopping_list.pdf'
+    filename = 'shopping_list.pdf'
     response['Content-Disposition'] = f'attachment; filename={filename}'
     return response
