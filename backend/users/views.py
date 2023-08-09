@@ -28,7 +28,6 @@ class UserViewSet(UserViewSet):
         context = {
             'request': request
         }
-
         if request.method == 'POST':
             serializer = FollowingSerializer(author,
                                              data=request.data,
