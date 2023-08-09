@@ -41,5 +41,4 @@ services:
       - static:/var/html/static/
       - media:/var/html/media/
     depends_on:
-    - db
     - backend
