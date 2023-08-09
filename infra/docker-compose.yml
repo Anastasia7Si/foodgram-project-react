@@ -26,7 +26,7 @@ services:
   frontend:
     image: anasti97/foodgram_frontend
     volumes:
-      - ../frontend/:/app/build/
+      - frontend/:/app/build/
     depends_on:
       - db
 
