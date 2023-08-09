@@ -1,9 +1,10 @@
 from django.contrib.auth import get_user_model
-from djoser.serializers import UserSerializer, UserCreateSerializer
+from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
-from rest_framework import serializers
-
 from recipes.models import Recipe
+from rest_framework.serializers import (IntegerField, ModelSerializer,
+                                        SerializerMethodField, ValidationError)
+
 from .models import Following
 
 User = get_user_model()
@@ -19,7 +20,7 @@ class UserCreateSerializer(UserCreateSerializer):
 
 class UserReadSerializer(UserSerializer):
     """Сериализатор просмотра профиля пользователя."""
-    is_subscribed = serializers.SerializerMethodField(read_only=True)
+    is_subscribed = SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
@@ -34,14 +35,14 @@ class UserReadSerializer(UserSerializer):
         ).exists()
 
 
-class FollowingRecipeSerializer(serializers.ModelSerializer):
+class FollowingRecipeSerializer(ModelSerializer):
     """Сериализатор рецептов из подписок."""
     class Meta:
         model = Recipe
         fields = ('name', 'image', 'cooking_time')
 
 
-class RecipeShorPresentationtSerializer(serializers.ModelSerializer):
+class RecipeShorPresentationtSerializer(ModelSerializer):
     """Сериализатор превью рецепта."""
     image = Base64ImageField()
 
@@ -57,10 +58,10 @@ class RecipeShorPresentationtSerializer(serializers.ModelSerializer):
 
 class FollowingSerializer(UserReadSerializer):
     """Сериализатор подписок."""
-    recipes_count = serializers.IntegerField(
+    recipes_count = IntegerField(
         source='recipes_set.count',
         read_only=True)
-    recipes = serializers.SerializerMethodField()
+    recipes = SerializerMethodField()
 
     class Meta:
         model = User
@@ -72,13 +73,13 @@ class FollowingSerializer(UserReadSerializer):
 
     def validate(self, data):
         if self.context.get('request').user == self.context.get('author_id'):
-            return serializers.ValidationError({
+            return ValidationError({
                 'errors': 'Нельзя подписаться на собственный профиль!'})
         if Following.objects.filter(
             user=self.context.get('request').user,
             author=self.context.get('author_id')
         ).exists():
-            return serializers.ValidationError({
+            return ValidationError({
                 'errors': 'Вы уже подписанны на этого автора!'})
         return data
 

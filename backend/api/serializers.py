@@ -1,9 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
+from recipes.models import Ingredient, IngredientAmount, Recipe, Tag
 from rest_framework import serializers
-
-from recipes.models import Recipe, Tag, Ingredient, IngredientAmount
 from users.serializers import UserReadSerializer
 
 User = get_user_model()
@@ -49,7 +48,7 @@ class AddIngredienIntRecipeSerializer(serializers.ModelSerializer):
 class RecipeReadSerializer(serializers.ModelSerializer):
     """Сериализатор просмотра рецепта."""
     tags = TagSerializer(many=True)
-    author = UserReadSerializer()
+    author = UserReadSerializer(read_only=True)
     ingredients = AmountRecipeSerializer(
         read_only=True,
         many=True,
