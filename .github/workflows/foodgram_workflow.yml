@@ -66,6 +66,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
         script: |
+          cd foodgram/
           sudo docker pull anasti97/foodgram_frontend
           sudo docker pull anasti97/foodgram_backend
           sudo docker-compose stop
