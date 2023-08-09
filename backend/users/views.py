@@ -34,13 +34,13 @@ class UserViewSet(UserViewSet):
                                              context=context)
             serializer.is_valid(raise_exception=True)
             Following.objects.create(user=user, author=author)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return (Response(serializer.data, status=status.HTTP_201_CREATED))
         if request.method == 'DELETE':
             following = get_object_or_404(Following,
                                           user=user,
                                           author=author)
             following.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            return (Response(status=status.HTTP_204_NO_CONTENT))
 
     @action(
         detail=False,
