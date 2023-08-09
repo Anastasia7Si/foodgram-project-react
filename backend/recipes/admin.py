@@ -3,7 +3,7 @@ from django.contrib.admin import display
 from users.models import Following
 
 from .models import (Favorite, Ingredient, IngredientAmount, Recipe,
-                     Shopping_cart, Tag)
+                     Shopping_Cart, Tag)
 
 
 class IngredientInline(admin.TabularInline):
@@ -47,8 +47,8 @@ class FavoriteAdmin(admin.ModelAdmin):
     list_filter = ('user',)
 
 
-@admin.register(Shopping_cart)
-class Shopping_cartAdmin(admin.ModelAdmin):
+@admin.register(Shopping_Cart)
+class ShoppingCartAdmin(admin.ModelAdmin):
     list_display = ('user', 'recipe')
     list_filter = ('user',)
 

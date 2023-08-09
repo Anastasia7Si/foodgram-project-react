@@ -36,7 +36,6 @@ class UserViewSet(UserViewSet):
             serializer.is_valid(raise_exception=True)
             Following.objects.create(user=user, author=author)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
         if request.method == 'DELETE':
             following = get_object_or_404(Following,
                                           user=user,
