@@ -28,7 +28,7 @@ python manage.py runserver
 Клонирование базы:
 python manage.py convert_csv_to_bd
 
-ехнологии:
+Технологии:
 - Python
 - Django
 - Django REST Framework
