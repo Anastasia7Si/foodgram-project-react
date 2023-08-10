@@ -28,12 +28,20 @@ python manage.py runserver
 Клонирование базы:
 python manage.py convert_csv_to_bd
 
-Технологии:
-
-Python 3.7
-Django 3.2
-Django REST framework 3.12
-Simple JWT 4.7.2
+ехнологии:
+- Python
+- Django
+- Django REST Framework
+- Simple JWT
+- Gunicorn 
+- Фронтенд-приложение на React 
+- npm
+- Docker
+- DockerHub
+- CI/CD
+- GitHub Actions
+- PostgreSQL
+- Docker network
 
 
 Автор:
