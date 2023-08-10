@@ -5,7 +5,7 @@
 
 К проекту подключен REDOC, в ктором можно ознакомиться с  эндпоинтами и методами, а также с примерами запросов, ответов и кода: http://localhost/api/docs/
 
-Как запустить проект:
+### Как запустить проект локально:
 
 Клонировать репозиторий и перейти в него в командной строке:
 git clone git@github.com:Anastasia7Si/foodgram-project-react.git
@@ -28,6 +28,39 @@ python manage.py runserver
 Клонирование базы:
 python manage.py convert_csv_to_bd
 
+### Запуск проекта на удалённом сервере
+Клонировать репозиторий и перейти в него в командной строке:
+```
+git clone git@github.com:Anastasia7Si/foodgram-project-react.git
+cd foodgram-project-react 
+```
+В корне проекта создать файл .env и прописать в него свои данные.
+Пример:
+```
+POSTGRES_DB=example
+POSTGRES_USER=example_user
+POSTGRES_PASSWORD=example_password
+DB_HOST=example_db
+DB_PORT=5432
+```
+Запустить проект через docker-compose:
+```
+docker compose -f docker-compose.yml up
+```
+Выполнить миграции:
+```
+docker compose -f docker-compose.yml exec backend python manage.py migrate
+```
+Создать суперюзера:
+```
+sudo docker compose -f docker-compose.yml exec backend python manage.py createsuperuser
+```
+Собрать статику и скопировать ее:
+```
+docker compose -f docker-compose.yml exec backend python manage.py collectstatic
+docker compose -f docker-compose.yml exec backend cp -r /app/static_backend/. /backend_static/static/
+docker compose -f docker-compose.yml exec backend python manage.py convert_csv_to_bd
+```
 Технологии:
 - Python
 - Django
