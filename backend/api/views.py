@@ -13,7 +13,7 @@ from .pagination import Pagination
 from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
 from .serializers import (IngredientSerializer, RecipeReadSerializer,
                           RecipeWriteSerializer, TagSerializer)
-from .utils import download_shopping_cart_file
+from .utils import download_shopping_cart
 
 
 class IngredientViewSet(ReadOnlyModelViewSet):
@@ -94,5 +94,5 @@ class RecipeViewSet(ModelViewSet):
     )
     def download_shopping_cart(self, request):
         if request.method == 'GET':
-            return download_shopping_cart_file(request)
+            return download_shopping_cart(request)
         return Response(status=status.HTTP_400_BAD_REQUEST)
