@@ -1,4 +1,4 @@
-<h1 align="center">Добро пожаловать на страницу проекта <a href="" target="_blank">Продуктовый помощник</a> 
+<h1 align="center">Добро пожаловать на страницу проекта <a href="foodrgam.ddns.net" target="_blank">Продуктовый помощник</a> 
 <img src="https://github.com/blackcater/blackcater/raw/main/images/Hi.gif" height="32"/></h1>
 
 Данный сервис серпозволяет пользователям публиковать рецепты, подписываться на публикации других пользователей, добавлять понравившиеся рецепты в список «Избранное», а перед походом в магазин скачивать сводный список продуктов, необходимых для приготовления одного или нескольких выбранных блюд.
@@ -80,3 +80,10 @@ docker compose -f docker-compose.yml exec backend python manage.py convert_csv_t
 Автор:
 
 - Анастасия Пушкарная(https://github.com/Anastasia7Si)
+
+Проект доступен по адресу:
+- foodrgam.ddns.net
+
+Для входа в админку:
+Почта: py@ya.ru
+Пароль: Nicole089
