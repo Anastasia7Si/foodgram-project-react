@@ -120,23 +120,31 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
     def validate_ingredients(self, value):
         ingredients = value
         if not ingredients:
-            return ('Необходимо добавить хотя бы один ингредиент!')
+            raise serializers.ValidationError(
+                'Необходимо добавить хотя бы один ингредиент!'
+            )
         ingredients_list = []
         for item in ingredients:
             ingredient = get_object_or_404(Ingredient, id=item['id'])
             if ingredient in ingredients_list:
-                return ('Ингредиент повторяется в рецепте!')
+                raise serializers.ValidationError(
+                    'Ингредиент повторяется в рецепте!'
+                )
             ingredients_list.append(ingredient)
         return value
 
     def validate_tags(self, value):
         tags = value
         if not tags:
-            return ('Необходимо добавить хотя бы один тэг!')
+            raise serializers.ValidationError(
+                'Необходимо добавить хотя бы один тэг!'
+            )
         tags_list = []
         for tag in tags:
             if tag in tags_list:
-                return ('Необходимо ввести уникальные тэги!')
+                raise serializers.ValidationError(
+                    'Необходимо ввести уникальные тэги!'
+                )
             tags_list.append(tag)
         return value
 
