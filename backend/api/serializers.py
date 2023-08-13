@@ -3,7 +3,7 @@ from django.core.validators import MinValueValidator
 from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
 from recipes.models import Ingredient, IngredientAmount, Recipe, Tag
-from rest_framework import serializers
+from rest_framework import exceptions, serializers
 from users.serializers import UserReadSerializer
 
 User = get_user_model()
@@ -120,14 +120,14 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
     def validate_ingredients(self, value):
         ingredients = value
         if not ingredients:
-            raise serializers.ValidationError(
+            raise exceptions.ValidationError(
                 'Необходимо добавить хотя бы один ингредиент!'
             )
         ingredients_list = []
         for item in ingredients:
             ingredient = get_object_or_404(Ingredient, id=item['id'])
             if ingredient in ingredients_list:
-                raise serializers.ValidationError(
+                raise exceptions.ValidationError(
                     'Ингредиент повторяется в рецепте!'
                 )
             ingredients_list.append(ingredient)
@@ -136,13 +136,13 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
     def validate_tags(self, value):
         tags = value
         if not tags:
-            raise serializers.ValidationError(
+            raise exceptions.ValidationError(
                 'Необходимо добавить хотя бы один тэг!'
             )
         tags_list = []
         for tag in tags:
             if tag in tags_list:
-                raise serializers.ValidationError(
+                raise exceptions.ValidationError(
                     'Необходимо ввести уникальные тэги!'
                 )
             tags_list.append(tag)
