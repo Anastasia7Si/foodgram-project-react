@@ -23,6 +23,7 @@ class IngredientViewSet(ReadOnlyModelViewSet):
     permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (IngredientSearch,)
     search_fields = ('^name',)
+    pagination_class = None
 
 
 class TagViewSet(ReadOnlyModelViewSet):
