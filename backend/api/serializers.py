@@ -121,14 +121,14 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         ingredients = value
         if not ingredients:
             raise exceptions.ValidationError(
-                detail='Необходимо добавить хотя бы один ингредиент!'
+                message='Необходимо добавить хотя бы один ингредиент!'
             )
         ingredients_list = []
         for item in ingredients:
             ingredient = get_object_or_404(Ingredient, id=item['id'])
             if ingredient in ingredients_list:
                 raise exceptions.ValidationError(
-                    detail='Ингредиент повторяется в рецепте!'
+                    message='Ингредиент повторяется в рецепте!'
                 )
             ingredients_list.append(ingredient)
         return value
@@ -137,13 +137,13 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         tags = value
         if not tags:
             raise exceptions.ValidationError(
-                detail='Необходимо добавить хотя бы один тэг!'
+                message='Необходимо добавить хотя бы один тэг!'
             )
         tags_list = []
         for tag in tags:
             if tag in tags_list:
                 raise exceptions.ValidationError(
-                    detail='Необходимо ввести уникальные тэги!'
+                    message='Необходимо ввести уникальные тэги!'
                 )
             tags_list.append(tag)
         return value
