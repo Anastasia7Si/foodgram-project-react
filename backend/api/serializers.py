@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator
 from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
 from recipes.models import Ingredient, IngredientAmount, Recipe, Tag
@@ -38,7 +39,14 @@ class AmountRecipeSerializer(serializers.ModelSerializer):
 class AddIngredienIntRecipeSerializer(serializers.ModelSerializer):
     """Сериализатор для добавления ингредиентов в рецепт."""
     id = serializers.IntegerField(write_only=True)
-    amount = serializers.IntegerField(write_only=True)
+    amount = serializers.IntegerField(
+        validators=(
+            MinValueValidator(
+                1,
+                message='Количество ингредиента должно быть больше нуля!'
+            ),
+        )
+    )
 
     class Meta:
         model = IngredientAmount
@@ -118,8 +126,6 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             ingredient = get_object_or_404(Ingredient, id=item['id'])
             if ingredient in ingredients_list:
                 return ('Ингредиент повторяется в рецепте!')
-            if int(item['amount']) <= 0:
-                return ('Нулевое количество ингредиента!')
             ingredients_list.append(ingredient)
         return value
 
