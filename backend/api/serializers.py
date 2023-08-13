@@ -109,23 +109,30 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             'cooking_time'
         )
 
-    def validate_ingredients(self, ingredients):
+    def validate_ingredients(self, value):
+        ingredients = value
         if not ingredients:
             return ('Необходимо добавить хотя бы один ингредиент!')
+        ingredients_list = []
         for item in ingredients:
-            if item['amount'] <= 0:
+            ingredient = get_object_or_404(Ingredient, id=item['id'])
+            if ingredient in ingredients_list:
+                return ('Ингредиент повторяется в рецепте!')
+            if int(item['amount']) <= 0:
                 return ('Нулевое количество ингредиента!')
-        ingredients_list = [ingredient['id'] for ingredient in ingredients]
-        if len(ingredients_list) != len(set(ingredients_list)):
-            return ('Ингредиент повторяется в рецепте!')
-        return ingredients
+            ingredients_list.append(ingredient)
+        return value
 
-    def validate_tags(self, tags):
+    def validate_tags(self, value):
+        tags = value
         if not tags:
             return ('Необходимо добавить хотя бы один тэг!')
-        if len(tags) != len(set(tags)):
-            return ('Необходимо ввести уникальные тэги!')
-        return tags
+        tags_list = []
+        for tag in tags:
+            if tag in tags_list:
+                return ('Необходимо ввести уникальные тэги!')
+            tags_list.append(tag)
+        return value
 
     def add_ingredients(self, ingredients, recipe):
         ingredients_list = []
